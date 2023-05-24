@@ -23,7 +23,7 @@ class UsersController extends Component
     //variables for the users
     public $selected_id, $name, $surname, $cedula_identidad, $profile, $email, $status, $password, $address, $phone, $image;
 
-    private $pagination = 10;
+    private $pagination = 1;
 
     public $modalTitle = '';
 

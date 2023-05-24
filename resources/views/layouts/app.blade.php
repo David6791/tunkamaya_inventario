@@ -11,6 +11,7 @@
 
     <title>App Start | </title>
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <!-- Bootstrap -->
     <link href="{{ asset('vendor/asset/css/bootstrap.min.css') }}" rel="stylesheet">
     <!-- Font Awesome -->
@@ -37,6 +38,14 @@
 
         .tchna tr {
             height: 10px !important;
+        }
+
+        .spinner-border-custom {
+            width: 1.5rem;
+            height: 1.5rem;
+            border-width: 0.2em;
+            border-color: #ccc;
+            border-top-color: #007bff;
         }
     </style>
     @livewireStyles
@@ -82,37 +91,32 @@
                                 <li><a><i class="fa fa-edit"></i> Configuraciones <span
                                             class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
+                                        <li><a href="{{ route('grupos') }}">Grupo Contable</a></li>
+                                        <li><a href="{{ route('tipos') }}">Tipo Activos</a></li>
+                                        <li><a href="{{ route('subtipos') }}">SubTipo Activos</a></li>
                                         <li><a href="{{ route('activos') }}">Activos</a></li>
                                     </ul>
                                 </li>
-                                <li><a><i class="fa fa-desktop"></i> UI Elements <span
+                                <li><a><i class="fa fa-map-marker"></i> Localización <span
                                             class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
-                                        <li><a href="general_elements.html">General Elements</a></li>
-                                        <li><a href="media_gallery.html">Media Gallery</a></li>
-                                        <li><a href="typography.html">Typography</a></li>
-                                        <li><a href="icons.html">Icons</a></li>
-                                        <li><a href="glyphicons.html">Glyphicons</a></li>
-                                        <li><a href="widgets.html">Widgets</a></li>
-                                        <li><a href="invoice.html">Invoice</a></li>
-                                        <li><a href="inbox.html">Inbox</a></li>
-                                        <li><a href="calendar.html">Calendar</a></li>
+                                        <li><a href="{{ route('departamentos') }}">Departamentos</a></li>
+                                        <li><a href="{{ route('provincias') }}">Provincias</a></li>
+                                        <li><a href="{{ route('municipios') }}">Municipios</a></li>
+                                        <li><a href="{{ route('localidades') }}">Localidades</a></li>
                                     </ul>
                                 </li>
-                                <li><a><i class="fa fa-table"></i> Tables <span class="fa fa-chevron-down"></span></a>
-                                    <ul class="nav child_menu">
-                                        <li><a href="tables.html">Tables</a></li>
-                                        <li><a href="tables_dynamic.html">Table Dynamic</a></li>
-                                    </ul>
-                                </li>
-                                <li><a><i class="fa fa-bar-chart-o"></i> Data Presentation <span
+                                <li><a><i class="fa fa-table"></i> Infraestructura <span
                                             class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
-                                        <li><a href="chartjs.html">Chart JS</a></li>
-                                        <li><a href="chartjs2.html">Chart JS2</a></li>
-                                        <li><a href="morisjs.html">Moris JS</a></li>
-                                        <li><a href="echarts.html">ECharts</a></li>
-                                        <li><a href="other_charts.html">Other Charts</a></li>
+                                        <li><a href="{{ route('bloques') }}">Bloques</a></li>
+                                        <li><a href="{{ route('areas') }}">Areas</a></li>
+                                    </ul>
+                                </li>
+                                <li><a><i class="fa fa-bar-chart-o"></i> RR. HH. <span
+                                            class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                        <li><a href="{{ route('responsables') }}">Responsables</a></li>
                                     </ul>
                                 </li>
                                 <li><a><i class="fa fa-clone"></i>Layouts <span class="fa fa-chevron-down"></span></a>
