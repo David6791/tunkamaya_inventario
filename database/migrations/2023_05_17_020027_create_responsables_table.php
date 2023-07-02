@@ -22,6 +22,9 @@ return new class extends Migration
             $table->string('cargo');
             $table->integer('status');
 
+            $table->unsignedBigInteger('institucion_id');
+            $table->foreign('institucion_id')->references('id')->on('institucion');
+
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
 

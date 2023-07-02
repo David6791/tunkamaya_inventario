@@ -26,7 +26,7 @@ class ProfileController extends Component
 
     //public vars for the show and hide passwords
     public $oldShowPassword, $showPassword, $showRePassword;
-
+    protected $paginationTheme = 'bootstrap';
     public $modalTitle = '';
 
     public function mount()

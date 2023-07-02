@@ -24,6 +24,9 @@ return new class extends Migration
             $table->unsignedBigInteger('localidad_id');
             $table->foreign('localidad_id')->references('id')->on('localidades');
 
+            $table->unsignedBigInteger('institucion_id');
+            $table->foreign('institucion_id')->references('id')->on('institucion');
+
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
 

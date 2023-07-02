@@ -13,6 +13,7 @@ class Grupo extends Model
         'codigo',
         'status',
         'user_id',
+        'institucion_id',
     ];
 
     protected $table = 'grupos';

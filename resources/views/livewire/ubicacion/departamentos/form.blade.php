@@ -6,7 +6,7 @@
                 <h6 class="modal-title">
                     <b>{{ $modalTitle }}</b>
                 </h6>
-                <h6 class="text-center text-warning" wire:loading> Por favor espere.</h6>
+                <span class="spinner-border spinner-border-sm spinner-border-custom" wire:loading></span>
             </div>
             <div class="modal-body">
                 <div class="row">

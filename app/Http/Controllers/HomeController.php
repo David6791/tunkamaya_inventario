@@ -23,6 +23,6 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('livewire.home')->layout('layouts.app');;
+        return view('livewire.home');
     }
 }

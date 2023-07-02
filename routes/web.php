@@ -15,6 +15,13 @@ use App\Http\Livewire\AreasController;
 use App\Http\Livewire\TiposController;
 use App\Http\Livewire\SubTiposController;
 use App\Http\Livewire\GruposController;
+use App\Http\Livewire\InstitucionesController;
+use App\Http\Livewire\DetalleIController;
+use App\Http\Livewire\RolesController;
+use App\Http\Livewire\PermisosController;
+use App\Http\Livewire\AsignarController;
+use App\Http\Livewire\AsignarRolesController;
+use App\Http\Livewire\DashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,10 +34,11 @@ use App\Http\Livewire\GruposController;
 |
 */
 
-Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::middleware(['auth'])->group(function () {
 
     Route::middleware('auth')->group(function () {
+        Route::get(uri: 'dash', action: DashboardController::class)->name(name: 'dash')->middleware('auth');
         Route::get(uri: 'profile', action: ProfileController::class)->name(name: 'profile');
         Route::get(uri: 'users', action: UsersController::class)->name(name: 'users');
         Route::get(uri: 'activos', action: ActivosController::class)->name(name: 'activos');
@@ -44,6 +52,13 @@ Route::middleware(['auth'])->group(function () {
         Route::get(uri: 'tipos', action: TiposController::class)->name(name: 'tipos');
         Route::get(uri: 'grupos', action: GruposController::class)->name(name: 'grupos');
         Route::get(uri: 'subtipos', action: SubTiposController::class)->name(name: 'subtipos');
+        Route::get(uri: 'instituciones', action: InstitucionesController::class)->name(name: 'instituciones');
+        Route::get(uri: 'roles', action: RolesController::class)->name(name: 'roles');
+        Route::get(uri: 'permisos', action: PermisosController::class)->name(name: 'permisos');
+        Route::get(uri: 'asignar', action: AsignarController::class)->name(name: 'asignar');
+        Route::get(uri: 'asignarRoles', action: AsignarRolesController::class)->name(name: 'asignar_roles');
+
+        Route::get('/detalle_institucion/{p}', DetalleIController::class)->name('detalle_institucion');
     });
 });
 Route::get('/', function () {

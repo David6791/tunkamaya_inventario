@@ -15,6 +15,7 @@ class Bloque extends Model
         'observation',
         'status',
         'localidad_id',
+        'institucion_id',
         'user_id',
     ];
 

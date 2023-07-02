@@ -21,6 +21,9 @@
                         <tr>
                             <th class="table-th text-white">CODIGO</th>
                             <th class="table-th text-white text-center">GRUPO CONTABLE</th>
+                            @role('Super Administrador')
+                                <th class="table-th text-white text-center">INSTITUCION</th>
+                            @endrole
                             <th class="table-th text-white text-center">STATUS</th>
                             <th class="table-th text-white text-center">ACCION </th>
                         </tr>
@@ -30,6 +33,9 @@
                             <tr>
                                 <td>{{ $r->codigo }}</td>
                                 <td>{{ $r->name }}</td>
+                                @role('Super Administrador')
+                                    <td>{{ $r->institucion }}</td>
+                                @endrole
                                 <td>
                                     <span
                                         class="badge {{ $r->status === 1 ? 'badge-success' : 'badge-danger' }} text-uppercase">{{ $r->status === 1 ? 'ACTIVO' : 'BLOQUEADO' }}</span>

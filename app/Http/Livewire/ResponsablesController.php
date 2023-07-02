@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire;
 
+use App\Models\Institucion;
 use Livewire\Component;
 
 use App\Models\Responsable;
@@ -14,7 +15,7 @@ class ResponsablesController extends Component
     use WithPagination;
     use WithFileUploads;
 
-    public $search, $selected_id, $ci, $nombres, $apellidos, $status, $cargo;
+    public $search, $selected_id, $ci, $nombres, $apellidos, $status, $cargo, $instituciones = [], $institucion_id;
 
     private $pagination = 10;
 
@@ -25,10 +26,11 @@ class ResponsablesController extends Component
     {
 
         if (strlen($this->search) > 0) {
-            $data = Responsable::where('ci', 'like', '%' . $this->search . '%')->orderBy('id', 'asc')->paginate($this->pagination);
+            $data = Responsable::join('institucion as i', 'i.id', 'responsables.institucion_id')->select('responsables.*', 'i.nombre as institucion')->where('responsables.ci', 'like', '%' . $this->search . '%')->orderBy('id', 'asc')->paginate($this->pagination);
         } else {
-            $data = Responsable::orderBy('ci', 'asc')->paginate($this->pagination);
+            $data = Responsable::join('institucion as i', 'i.id', 'responsables.institucion_id')->select('responsables.*', 'i.nombre as institucion')->orderBy('responsables.ci', 'asc')->paginate($this->pagination);
         }
+        $this->instituciones = Institucion::orderBy('id', 'asc')->get();
 
         return view('livewire.infraestructura.responsables.component', [
             'data' => $data
@@ -47,6 +49,7 @@ class ResponsablesController extends Component
             'apellidos' => 'required',
             'cargo' => 'required',
             'status' => 'required|not_in:Elegir',
+            'institucion_id' => 'required|not_in:Elegir'
         ];
         $messages = [
             'ci.required' => 'Debe ingresar la Cedula de Identidad',
@@ -55,6 +58,8 @@ class ResponsablesController extends Component
             'cargo.required' => 'Debe ingresar el Cargo',
             'status.required' => 'Debe selecciona un Estado.',
             'status.not_in' => 'Seleccione un Estado diferente.',
+            'institucion_id.required' => 'Debe seleccionar la Institucion para este Responsable.',
+            'institucion_id.not_in' => 'Seleccione una Institucion diferente.',
         ];
         $this->validate($rules, $messages);
         try {
@@ -64,6 +69,7 @@ class ResponsablesController extends Component
                 'apellidos' => $this->apellidos,
                 'cargo' => $this->cargo,
                 'status' => $this->status,
+                'institucion_id' => $this->institucion_id,
                 'user_id' => auth()->user()->id,
             ]);
             $this->emit('registrado', 'El Responsable: ' . $this->nombres . ' se registro Correctamente.');
@@ -80,6 +86,7 @@ class ResponsablesController extends Component
         $this->cargo = '';
         $this->status = '';
         $this->selected_id = '';
+        $this->institucion_id = '';
     }
     public function Edit(Responsable $responsable)
     {
@@ -89,6 +96,7 @@ class ResponsablesController extends Component
         $this->apellidos = $responsable->apellidos;
         $this->status = $responsable->status;
         $this->cargo = $responsable->cargo;
+        $this->institucion_id = $responsable->institucion_id;
         $this->emit('edit', 'open');
     }
     public function Update()
@@ -99,6 +107,7 @@ class ResponsablesController extends Component
             'apellidos' => 'required',
             'cargo' => 'required',
             'status' => 'required|not_in:Elegir',
+            'institucion_id' => 'required|not_in:Elegir',
         ];
         $messages = [
             'ci.required' => 'Debe ingresar la Cedula de Identidad',
@@ -108,6 +117,8 @@ class ResponsablesController extends Component
             'cargo.required' => 'Debe ingresar el Cargo',
             'status.required' => 'Debe selecciona un Estado.',
             'status.not_in' => 'Seleccione un Estado diferente.',
+            'institucion_id.required' => 'Debe seleccionar la Institucion para este Responsable.',
+            'institucion_id.not_in' => 'Seleccione una Institucion diferente.',
         ];
         $this->validate($rules, $messages);
 
@@ -119,6 +130,7 @@ class ResponsablesController extends Component
                 'apellidos' => $this->apellidos,
                 'status' => $this->status,
                 'cargo' => $this->cargo,
+                'institucion_id' => $this->institucion_id,
                 'user_id' => auth()->user()->id,
             ]);
             $this->emit('updated', 'Los Datos del Responsable: ' . $this->apellidos . ' ' . $this->apellidos . ' fueron actualizados correctamente.');

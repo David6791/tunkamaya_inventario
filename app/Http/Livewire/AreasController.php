@@ -8,11 +8,11 @@ use Livewire\WithPagination;
 use Livewire\WithFileUploads;
 
 use App\Models\Area;
-use App\Models\Departamento;
 use App\Models\Provincia;
 use App\Models\Municipio;
 use App\Models\Localidad;
 use App\Models\Bloque;
+use App\Models\Institucion;
 use App\Models\Responsable;
 
 class AreasController extends Component
@@ -20,11 +20,12 @@ class AreasController extends Component
     use WithPagination;
     use WithFileUploads;
 
-    public $search, $selected_id, $departamentos, $provincias = [], $municipios = [], $localidades = [], $bloques = [], $codigo, $name, $status, $departamento_id, $provincia_id, $municipio_id, $localidad_id, $bloque_id, $responsable_id;
+    public $search, $selected_id, $instituciones, $bloques = [], $codigo, $name, $status, $institucion_id, $provincia_id, $municipio_id, $localidad_id, $bloque_id, $responsable_id, $responsables = [];
 
     private $pagination = 10;
 
     public $modalTitle;
+    protected $paginationTheme = 'bootstrap';
 
     public function mount()
     {
@@ -33,7 +34,7 @@ class AreasController extends Component
 
     public function render()
     {
-        $this->departamentos = Departamento::orderBy('id', 'asc')->get();
+        $this->instituciones = Institucion::orderBy('id', 'asc')->get();
         if (strlen($this->search) > 0) {
             $data = Area::join('bloques as b', 'b.id', 'areas.bloque_id')
                 ->join('responsables as r', 'r.id', 'areas.responsable_id')
@@ -49,52 +50,28 @@ class AreasController extends Component
 
         return view('livewire.infraestructura.areas.component', [
             'data' => $data,
-            'departamentos' => $this->departamentos,
+            'instituciones' => $this->instituciones,
             'responsables' => Responsable::orderBy('id', 'asc')->get()
         ])->layout('layouts.app');
     }
-    public function select_depart($id)
+    public function select_bloques($id)
     {
-        $this->provincias = Provincia::where('departamento_id', '=', $id)->get();
-        $this->municipios = [];
-        $this->localidades = [];
-        $this->bloques = [];
-        $this->provincia_id = 'Elegir';
-        $this->municipio_id = 'Elegir';
-        $this->localidad_id = 'Elegir';
-        $this->bloque_id = 'Elegir';
+        if ($id === 'Elegir') {
+        } else {
+            $this->bloques = Bloque::where('institucion_id', '=', $id)->get();
+            $this->responsables = Responsable::where('institucion_id', '=', $id)->get();
+            $this->bloque_id = '';
+            $this->responsable_id = '';
+        }
     }
-    public function select_prov($id)
-    {
-        $this->municipios = Municipio::where('provincia_id', '=', $id)->get();
-        $this->localidades = [];
-        $this->bloques = [];
-        $this->municipio_id = 'Elegir';
-        $this->localidad_id = 'Elegir';
-        $this->bloque_id = 'Elegir';
-    }
-    public function select_muni($id)
-    {
-        $this->localidades = Localidad::where('municipio_id', '=', $id)->get();
-        $this->bloques = [];
-        $this->localidad_id = 'Elegir';
-        $this->bloque_id = 'Elegir';
-    }
-    public function select_loca($id)
-    {
-        $this->bloques = Bloque::where('localidad_id', '=', $id)->get();
-        $this->bloque_id = 'Elegir';
-    }
+
     public function Save()
     {
         $rules = [
             'codigo' => 'required',
             'name' => 'required',
             'status' => 'required|not_in:Elegir',
-            'departamento_id' => 'required|not_in:Elegir',
-            'provincia_id' => 'required|not_in:Elegir',
-            'municipio_id' => 'required|not_in:Elegir',
-            'localidad_id' => 'required|not_in:Elegir',
+            'institucion_id' => 'required|not_in:Elegir',
             'bloque_id' => 'required|not_in:Elegir',
             'responsable_id' => 'required|not_in:Elegir'
         ];
@@ -103,14 +80,8 @@ class AreasController extends Component
             'name.required' => 'Debe ingresar el nombre de la Provincia.',
             'status.required' => 'Debe selecciona un Estado.',
             'status.not_in' => 'Seleccione un Estado diferente.',
-            'departamento_id.required' => 'Debe seleccionar un Departamento.',
-            'departamento_id.not_in' => 'Seleccione un Departamento diferente.',
-            'provincia_id.required' => 'Debe seleccionar una Provincia.',
-            'provincia_id.not_in' => 'Seleccione una Provincia diferente.',
-            'municipio_id.required' => 'Debe seleccionar un Municipio.',
-            'municipio_id.not_in' => 'Seleccione una Municipio diferente.',
-            'localidad_id.required' => 'Debe seleccionar una Localidad.',
-            'localidad_id.not_in' => 'Seleccione una Localidad diferente.',
+            'institucion_id.required' => 'Debe seleccionar una Institucion.',
+            'institucion_id.not_in' => 'Seleccione una Institucion diferente.',
             'bloque_id.required' => 'Debe seleccionar un Bloque',
             'bloque_id.not_in' => 'Seleccione un Bloque diferente.',
             'reponsable_id.required' => 'Debe seleccionar un Responsable para el Area.',
@@ -124,8 +95,9 @@ class AreasController extends Component
                 'name' => $this->name,
                 'status' => $this->status,
                 'observation' => '',
-                'bloque_id' => $this->localidad_id,
+                'bloque_id' => $this->bloque_id,
                 'responsable_id' => $this->responsable_id,
+                'institucion_id' => $this->institucion_id,
                 'user_id' => auth()->user()->id,
             ]);
             $this->emit('registrado', 'La nueva Area: ' . $this->name . ' se registro Correctamente.');
@@ -146,20 +118,8 @@ class AreasController extends Component
         $this->bloque_id = $area->bloque_id;
         $bloque = Bloque::find($area->bloque_id);
         $this->bloques = Bloque::where('localidad_id', $bloque->localidad_id)->get();
-
-        $this->localidad_id = $bloque->localidad_id;
-        $localidad = Localidad::find($bloque->localidad_id);
-        $this->localidades = Localidad::where('municipio_id', $localidad->municipio_id)->get();
-
-        $this->municipio_id = $localidad->municipio_id;
-        $municipio = Municipio::find($localidad->municipio_id);
-        $this->municipios = Municipio::where('provincia_id', $municipio->provincia_id)->get();
-
-        $this->provincia_id = $municipio->provincia_id;
-        $provincia = Provincia::find($municipio->provincia_id);
-        $this->provincias = Provincia::where('departamento_id', $provincia->departamento_id)->get();
-
-        $this->departamento_id = $provincia->departamento_id;
+        $this->responsables = Responsable::where('institucion_id', $bloque->institucion_id)->get();
+        $this->institucion_id = $bloque->institucion_id;
 
         $this->emit('edit', 'open');
     }
@@ -170,10 +130,7 @@ class AreasController extends Component
             'codigo' => "required|unique:areas,codigo,{$this->selected_id}",
             'name' => 'required',
             'status' => 'required|not_in:Elegir',
-            'departamento_id' => 'required|not_in:Elegir',
-            'provincia_id' => 'required|not_in:Elegir',
-            'municipio_id' => 'required|not_in:Elegir',
-            'localidad_id' => 'required|not_in:Elegir',
+            'institucion_id' => 'required|not_in:Elegir',
             'bloque_id' => 'required|not_in:Elegir',
             'responsable_id' => 'required|not_in:Elegir'
         ];
@@ -183,14 +140,8 @@ class AreasController extends Component
             'name.required' => 'Debe ingresar el nombre de la Provincia.',
             'status.required' => 'Debe selecciona un Estado.',
             'status.not_in' => 'Seleccione un Estado diferente.',
-            'departamento_id.required' => 'Debe seleccionar un Departamento.',
-            'departamento_id.not_in' => 'Seleccione un Departamento diferente.',
-            'provincia_id.required' => 'Debe seleccionar una Provincia.',
-            'provincia_id.not_in' => 'Seleccione una Provincia diferente.',
-            'municipio_id.required' => 'Debe seleccionar un Municipio.',
-            'municipio_id.not_in' => 'Seleccione una Municipio diferente.',
-            'localidad_id.required' => 'Debe seleccionar una Localidad.',
-            'localidad_id.not_in' => 'Seleccione una Localidad diferente.',
+            'institucion_id.required' => 'Debe seleccionar una Institucion.',
+            'institucion_id.not_in' => 'Seleccione una Institucion diferente.',
             'bloque_id.required' => 'Debe seleccionar un Bloque',
             'bloque_id.not_in' => 'Seleccione un Bloque diferente.',
             'reponsable_id.required' => 'Debe seleccionar un Responsable para el Area.',
@@ -224,16 +175,11 @@ class AreasController extends Component
         $this->status = '';
         $this->modalTitle = 'REGISTRO NUEVA AREA';
         $this->selected_id = '';
-        $this->departamento_id = '';
-        $this->provincia_id = '';
-        $this->municipio_id = '';
-        $this->localidad_id = '';
         $this->responsable_id = '';
         $this->bloque_id = '';
-        $this->provincias = [];
-        $this->municipios = [];
-        $this->localidades = [];
         $this->bloques = [];
+        $this->responsables = [];
+        $this->institucion_id = '';
     }
     protected $listeners = [
         'Delete' => 'Delete',

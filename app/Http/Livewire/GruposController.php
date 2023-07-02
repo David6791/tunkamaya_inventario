@@ -3,8 +3,9 @@
 namespace App\Http\Livewire;
 
 use Livewire\Component;
-
+use Illuminate\Support\Facades\Auth;
 use App\Models\Grupo;
+use Spatie\Permission\Models\Role;
 
 class GruposController extends Component
 {
@@ -16,25 +17,38 @@ class GruposController extends Component
     public $modalTitle;
 
     private $pagination = 10;
+    public $us, $r;
 
     public function mount()
     {
         $this->modalTitle = 'REGISTRAR NUEVO GRUPO CONTABLE';
+        $this->us = Auth::user();
+        $this->r = $this->us->getRoleNames();
     }
 
     public function render()
     {
-        if (strlen($this->search) > 0) {
-            $data = Grupo::where('name', 'like', '%' . $this->search . '%')
-                ->select('*')->orderBy('name', 'asc')->paginate($this->pagination);
+        if ($this->r[0] === 'Super Administrador') {
+            if (strlen($this->search) > 0) {
+                $data = Grupo::where('name', 'like', '%' . $this->search . '%')
+                    ->join('institucion as i', 'i.id', 'grupos.institucion_id')
+                    ->select('grupos.*', 'i.nombre as institucion')->orderBy('name', 'asc')->paginate($this->pagination);
+            } else {
+                $data = Grupo::join('institucion as i', 'i.id', 'grupos.institucion_id')->select('grupos.*', 'i.nombre as institucion')->orderBy('id', 'asc')->paginate($this->pagination);
+            }
         } else {
-            $data = Grupo::select('*')->orderBy('id', 'asc')->paginate($this->pagination);
+            if (strlen($this->search) > 0) {
+                $data = Grupo::where('name', 'like', '%' . $this->search . '%')
+                    ->where('institucion_id', '=', session('institucion'))
+                    ->select('*')->orderBy('name', 'asc')->paginate($this->pagination);
+            } else {
+                $data = Grupo::select('*')->where('institucion_id', '=', session('institucion'))->orderBy('id', 'asc')->paginate($this->pagination);
+            }
         }
         return view('livewire.clasificacion.grupos.component', [
             'data' => $data
         ])->layout('layouts.app');
     }
-
     public function Save()
     {
         $rules = [
@@ -55,6 +69,7 @@ class GruposController extends Component
                 'codigo' => $this->codigo,
                 'name' => $this->name,
                 'status' => $this->status,
+                'institucion_id' => session('institucion'),
                 'user_id' => auth()->user()->id,
             ]);
             $this->emit('registrado', 'El Grupo Contable: ' . $this->name . '  se registro Correctamente.');

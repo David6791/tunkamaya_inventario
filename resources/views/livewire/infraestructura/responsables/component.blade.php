@@ -22,6 +22,7 @@
                             <th class="table-th text-white">CEDULA DE IDENTIDAD</th>
                             <th class="table-th text-white text-center">NOMBRES Y APELLIDOS</th>
                             <th class="table-th text-white text-center">CARGO</th>
+                            <th class="table-th text-white text-center">INSTITUCION</th>
                             <th class="table-th text-white text-center">STATUS</th>
                             <th class="table-th text-white text-center">ACCION </th>
                         </tr>
@@ -32,6 +33,7 @@
                                 <td>{{ $r->ci }}</td>
                                 <td>{{ $r->nombres . ' ' . $r->apellidos }}</td>
                                 <td>{{ $r->cargo }}</td>
+                                <td>{{ $r->institucion }}</td>
                                 <td>
                                     <span
                                         class="badge {{ $r->status === 1 ? 'badge-success' : 'badge-danger' }} text-uppercase">{{ $r->status === 1 ? 'ACTIVO' : 'BLOQUEADO' }}</span>

@@ -16,6 +16,7 @@ class Responsable extends Model
         'cargo',
         'status',
         'user_id',
+        'institucion_id',
     ];
 
     protected $table = 'responsables';

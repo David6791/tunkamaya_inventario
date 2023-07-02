@@ -89,11 +89,12 @@
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="profile">Tipo Usuario :</label>
+                            <label for="profile">Rol de Usuario :</label>
                             <select wire:model.lazy="profile" class="form-control" name="profile">
                                 <option value="Elegir">Elegir</option>
-                                <option value="ADMIN">ADMIN</option>
-                                <option value="EMPLEADO">EMPLEADO</option>
+                                @foreach ($roles as $r)
+                                    <option value="{{ $r->id }}">{{ $r->name }}</option>
+                                @endforeach
                             </select>
                             @error('profile')
                                 <span class="text-danger">{{ $message }}</span>

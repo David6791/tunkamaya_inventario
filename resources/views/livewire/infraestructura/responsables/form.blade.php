@@ -10,6 +10,22 @@
             </div>
             <div class="modal-body">
                 <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="institucion_id">SELECCIONE LA INSTITUCION:</label>
+                            <select wire:model.lazy="institucion_id" class="form-control" name="institucion_id">
+                                <option value="Elegir">Elegir</option>
+                                @foreach ($instituciones as $i)
+                                    <option value="{{ $i->id }}">{{ $i->nombre }}</option>
+                                @endforeach
+                            </select>
+                            @error('institucion_id')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="ci">CEDULA DE IDENTIDAD:</label>

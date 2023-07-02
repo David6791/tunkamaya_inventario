@@ -14,7 +14,7 @@
                     <div class="col-md-4">
                         <div class="form-group">
                             <label for="departamento_id">DEPARTAMENTO:</label>
-                            <select wire:model.lazy="departamento_id" wire:click="select_depart($event.target.value)"
+                            <select wire:model.lazy="departamento_id" wire:change="select_depart($event.target.value)"
                                 class="form-control" name="departamento_id">
                                 <option value="Elegir">Elegir</option>
                                 @foreach ($departamentos as $i)
@@ -29,7 +29,7 @@
                     <div class="col-md-4">
                         <div class="form-group">
                             <label for="provincia_id">PROVINCIA:</label>
-                            <select wire:model.lazy="provincia_id" wire:click="select_prov($event.target.value)"
+                            <select wire:model.lazy="provincia_id" wire:change="select_prov($event.target.value)"
                                 class="form-control" name="provincia_id">
                                 <option value="Elegir">Elegir</option>
                                 @forelse ($provincias as $i)

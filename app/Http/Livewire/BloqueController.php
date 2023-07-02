@@ -5,6 +5,7 @@ namespace App\Http\Livewire;
 use Livewire\Component;
 use App\Models\Bloque;
 use App\Models\Departamento;
+use App\Models\Institucion;
 use App\Models\Provincia;
 use App\Models\Municipio;
 use App\Models\Localidad;
@@ -16,7 +17,7 @@ class BloqueController extends Component
     use WithPagination;
     use WithFileUploads;
     protected $paginationTheme = 'bootstrap';
-    public $selected_id, $search, $departamentos = [], $provincias = [], $municipios = [], $localidades = [], $name, $codigo, $status, $observation, $departamento_id, $provincia_id, $municipio_id, $localidad_id;
+    public $instituciones = [], $selected_id, $search, $departamentos = [], $provincias = [], $municipios = [], $localidades = [], $name, $codigo, $status, $observation, $departamento_id, $provincia_id, $municipio_id, $localidad_id, $institucion_id;
 
     public $modalTitle;
 
@@ -35,9 +36,11 @@ class BloqueController extends Component
             $data = Bloque::join('localidades as l', 'l.id', 'bloques.localidad_id')->select('bloques.*', 'l.name as local_name')->orderBy('name', 'asc')->paginate($this->pagination);
         }
         $this->departamentos = Departamento::orderBy('id', 'asc')->get();
+        $this->instituciones = Institucion::orderBy('id', 'asc')->get();
         return view('livewire.ubicacion.bloques.component', [
             'data' => $data,
-            'departamentos' => $this->departamentos
+            'departamentos' => $this->departamentos,
+            'instituciones' => $this->instituciones
         ])->layout('layouts.app');
     }
 
@@ -79,6 +82,7 @@ class BloqueController extends Component
         $this->provincias = [];
         $this->municipios = [];
         $this->localidades = [];
+        $this->institucion_id = '';
     }
     public function Save()
     {
@@ -89,7 +93,8 @@ class BloqueController extends Component
             'departamento_id' => 'required|not_in:Elegir',
             'provincia_id' => 'required|not_in:Elegir',
             'municipio_id' => 'required|not_in:Elegir',
-            'localidad_id' => 'required|not_in:Elegir'
+            'localidad_id' => 'required|not_in:Elegir',
+            'institucion_id' => 'required|not_in:Elegir'
         ];
         $messages = [
             'codigo.required' => 'Debe ingresar el Codigo de Provincia',
@@ -104,6 +109,8 @@ class BloqueController extends Component
             'municipio_id.not_in' => 'Seleccione una Municipio diferente.',
             'localidad_id.required' => 'Debe seleccionar una Localidad',
             'localidad_id.not_in' => 'Seleccione una Localidad diferente.',
+            'institucion_id.required' => 'Debe seleccionar una Institucion',
+            'institucion_id.not_in' => 'Seleccione una Institucion diferente.',
         ];
         $this->validate($rules, $messages);
 
@@ -114,6 +121,7 @@ class BloqueController extends Component
                 'status' => $this->status,
                 'observation' => $this->observation,
                 'localidad_id' => $this->localidad_id,
+                'institucion_id' => $this->institucion_id,
                 'user_id' => auth()->user()->id,
             ]);
             $this->emit('registrado', 'El Nuevo Bloque: ' . $this->name . ' se registro Correctamente.');
@@ -130,8 +138,9 @@ class BloqueController extends Component
         $this->status = $bloque->status;
         $this->observation = $bloque->observation;
         $this->localidad_id = $bloque->localidad_id;
+        $this->institucion_id = $bloque->institucion_id;
 
-        $localidad = Localidad::find($bloque->id);
+        $localidad = Localidad::find($bloque->localidad_id);
         $this->localidades = Localidad::where('municipio_id', '=', $localidad->municipio_id)->get();
 
         $muni_id = Municipio::where('id', $localidad->municipio_id)->get();
@@ -156,7 +165,8 @@ class BloqueController extends Component
             'departamento_id' => 'required|not_in:Elegir',
             'provincia_id' => 'required|not_in:Elegir',
             'municipio_id' => 'required|not_in:Elegir',
-            'localidad_id' => 'required|not_in:Elegir'
+            'localidad_id' => 'required|not_in:Elegir',
+            'institucion_id' => 'required|not_in:Elegir'
         ];
         $messages = [
             'codigo.required' => 'Debe ingresar el Codigo de Provincia',
@@ -172,6 +182,8 @@ class BloqueController extends Component
             'municipio_id.not_in' => 'Seleccione una Municipio diferente.',
             'localidad_id.required' => 'Debe seleccionar una Localidad',
             'localidad_id.not_in' => 'Seleccione una Localidad diferente.',
+            'institucion_id.required' => 'Debe seleccionar una Institucion',
+            'institucion_id.not_in' => 'Seleccione una Institucion diferente.',
         ];
         $this->validate($rules, $messages);
 
@@ -183,6 +195,7 @@ class BloqueController extends Component
                 'status' => $this->status,
                 'observation' => $this->observation,
                 'localidad_id' => $this->localidad_id,
+                'institucion_id' => $this->institucion_id,
                 'user_id' => auth()->user()->id,
             ]);
             $this->emit('updated', 'Los Datos del Bloque: ' . $this->name . ' fueron actualizados correctamente.');

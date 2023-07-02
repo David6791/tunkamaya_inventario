@@ -11,74 +11,24 @@
             </div>
             <div class="modal-body">
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <div class="form-group">
-                            <label for="departamento_id">DEPARTAMENTO:</label>
-                            <select wire:model.lazy="departamento_id" wire:change="select_depart($event.target.value)"
-                                class="form-control departamento" name="departamento_id">
+                            <label for="institucion_id">INSTITUCIONES:</label>
+                            <select wire:model.lazy="institucion_id" wire:change="select_bloques($event.target.value)"
+                                class="form-control" name="institucion_id">
                                 <option value="Elegir">Elegir</option>
-                                @foreach ($departamentos as $i)
-                                    <option value="{{ $i->id }}">{{ $i->name }}</option>
+                                @foreach ($instituciones as $i)
+                                    <option value="{{ $i->id }}">{{ $i->nombre }}</option>
                                 @endforeach
                             </select>
-                            @error('departamento_id')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="provincia_id">PROVINCIA:</label>
-                            <select wire:model.lazy="provincia_id" wire:change="select_prov($event.target.value)"
-                                class="form-control" name="provincia_id">
-                                <option value="Elegir">Elegir</option>
-                                @forelse ($provincias as $i)
-                                    <option value="{{ $i->id }}">{{ $i->name }}</option>
-                                @empty
-                                @endforelse
-                            </select>
-                            @error('provincia_id')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="municipio_id">MUNICIPIO:</label>
-                            <select wire:model.lazy="municipio_id" wire:change="select_muni($event.target.value)"
-                                class="form-control" name="municipio_id">
-                                <option value="Elegir">Elegir</option>
-                                @forelse ($municipios as $i)
-                                    <option value="{{ $i->id }}">{{ $i->name }}</option>
-                                @empty
-                                @endforelse
-                            </select>
-                            @error('municipio_id')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="localidad_id">LOCALIDAD:</label>
-                            <select wire:model.lazy="localidad_id" wire:change="select_loca($event.target.value)"
-                                class="form-control" name="localidad_id">
-                                <option value="Elegir">Elegir</option>
-                                @forelse ($localidades as $i)
-                                    <option value="{{ $i->id }}">{{ $i->name }}</option>
-                                @empty
-                                @endforelse
-                            </select>
-                            @error('localidad_id')
+                            @error('institucion_id')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="bloque_id">BLOQUE:</label>
+                            <label for="bloque_id">BLOQUES:</label>
                             <select wire:model.lazy="bloque_id" class="form-control" name="bloque_id">
                                 <option value="Elegir">Elegir</option>
                                 @forelse ($bloques as $i)
@@ -99,7 +49,8 @@
                             <select wire:model.lazy="responsable_id" class="form-control" name="responsable_id">
                                 <option value="Elegir">Elegir</option>
                                 @foreach ($responsables as $r)
-                                    <option value="{{ $r->id }}">{{ $r->nombres . ' ' . $r->apellidos }}
+                                    <option value="{{ $r->id }}">
+                                        {{ $r->nombres . ' ' . $r->apellidos . ' - ' . $r->cargo }}
                                     </option>
                                 @endforeach
                             </select>

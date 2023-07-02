@@ -8,6 +8,7 @@ use App\Models\User;
 use Livewire\WithPagination;
 use Livewire\WithFileUploads;
 use Intervention\Image\Facades\Image;
+use Spatie\Permission\Models\Role;
 
 use App\Mail\PasswordMailable;
 use Illuminate\Support\Facades\Mail;
@@ -21,9 +22,9 @@ class UsersController extends Component
 
     public $search;
     //variables for the users
-    public $selected_id, $name, $surname, $cedula_identidad, $profile, $email, $status, $password, $address, $phone, $image;
+    public $roles, $selected_id, $name, $surname, $cedula_identidad, $profile, $email, $status, $password, $address, $phone, $image;
 
-    private $pagination = 1;
+    private $pagination = 10;
 
     public $modalTitle = '';
 
@@ -40,17 +41,21 @@ class UsersController extends Component
         } else {
             $data = User::select('*')->orderBy('id', 'asc')->paginate($this->pagination);
         }
+        $this->roles = Role::orderBy('id', 'asc')->get();
         return view('livewire.users.component', [
             'data' => $data,
-        ])->layout('layouts.app');
+            'roles' => $this->roles,
+        ]);
     }
 
     public function Edit(User $user)
     {
+        $roles = $user->getRoleNames();
+        $id_rol = Role::findByName($roles[0]);
         $this->selected_id = $user->id;
         $this->name = $user->name;
         $this->status = $user->status;
-        $this->profile = $user->profile;
+        $this->profile = $id_rol->id;
         $this->surname = $user->surname;
         $this->phone = $user->phone;
         $this->address = $user->address;
@@ -95,9 +100,10 @@ class UsersController extends Component
                 'cedula_identidad' => $this->cedula_identidad,
                 'email' => $this->email,
                 'phone' => $this->phone,
-                'profile' => $this->profile,
+                //'profile' => $this->profile,
                 'status' => $this->status,
             ]);
+            $user->syncRoles($this->profile);
             if ($this->image) {
                 $customFileName = uniqid() . '_.' . $this->image->extension();
                 $ruta = 'C:\laragon\www\Apuestas\public\storage\usuarios/' . $customFileName;
@@ -139,7 +145,7 @@ class UsersController extends Component
     public function Save()
     {
         $rules = [
-            'email' => "required|email|unique:users,email,{$this->selected_id}",
+            'email' => "required|email|unique:users,email",
             'name' => 'required|min:3',
             'surname' => 'required|min:3',
             'cedula_identidad' => 'required|min:7',
@@ -172,11 +178,12 @@ class UsersController extends Component
                 'cedula_identidad' => $this->cedula_identidad,
                 'email' => $this->email,
                 'phone' => $this->phone,
-                'profile' => $this->profile,
+                //'profile' => '$this->profile',
                 'status' => $this->status,
                 'address' => $this->address,
                 'password' => bcrypt($this->cedula_identidad),
             ]);
+            $user->assignRole($this->profile);
             if ($this->image) {
                 $customFileName = uniqid() . '_.' . $this->image->extension();
                 $ruta = 'C:\laragon\www\Apuestas\public\storage\usuarios/' . $customFileName;

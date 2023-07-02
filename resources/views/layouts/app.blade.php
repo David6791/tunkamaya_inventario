@@ -47,6 +47,11 @@
             border-color: #ccc;
             border-top-color: #007bff;
         }
+
+        input[type="text"] {
+            min-width: 100px;
+            padding-right: 5px;
+        }
     </style>
     @livewireStyles
 </head>
@@ -83,11 +88,27 @@
                         <div class="menu_section">
                             <h3>General</h3>
                             <ul class="nav side-menu">
-                                <li><a><i class="fa fa-user"></i> Usuarios <span class="fa fa-chevron-down"></span></a>
-                                    <ul class="nav child_menu">
-                                        <li><a href="{{ route('users') }}">Lista Usuarios</a></li>
-                                    </ul>
-                                </li>
+                                @canany(['aUsuarios', 'aRoles', 'aPermisos', 'aAsignacionPermisos', 'aAsignacionRoles'])
+                                    <li><a><i class="fa fa-user"></i> Usuarios <span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            @can('aUsuarios')
+                                                <li><a href="{{ route('users') }}">Lista Usuarios</a></li>
+                                            @endcan
+                                            @can('aRoles')
+                                                <li><a href="{{ route('roles') }}">Roles</a></li>
+                                            @endcan
+                                            @can('aPermisos')
+                                                <li><a href="{{ route('permisos') }}">Permisos</a></li>
+                                            @endcan
+                                            @can('aAsignacionPermisos')
+                                                <li><a href="{{ route('asignar') }}">Asignacion Permisos</a></li>
+                                            @endcan
+                                            @can('aAsignacionRoles')
+                                                <li><a href="{{ route('asignar_roles') }}">Asignacion Roles</a></li>
+                                            @endcan
+                                        </ul>
+                                    </li>
+                                @endcanany
                                 <li><a><i class="fa fa-edit"></i> Configuraciones <span
                                             class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
@@ -109,6 +130,7 @@
                                 <li><a><i class="fa fa-table"></i> Infraestructura <span
                                             class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
+                                        <li><a href="{{ route('instituciones') }}">Instituciones</a></li>
                                         <li><a href="{{ route('bloques') }}">Bloques</a></li>
                                         <li><a href="{{ route('areas') }}">Areas</a></li>
                                     </ul>
@@ -119,10 +141,9 @@
                                         <li><a href="{{ route('responsables') }}">Responsables</a></li>
                                     </ul>
                                 </li>
-                                <li><a><i class="fa fa-clone"></i>Layouts <span class="fa fa-chevron-down"></span></a>
+                                <li><a><i class="fa fa-clone"></i>Instituciones <span
+                                            class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
-                                        <li><a href="fixed_sidebar.html">Fixed Sidebar</a></li>
-                                        <li><a href="fixed_footer.html">Fixed Footer</a></li>
                                     </ul>
                                 </li>
                             </ul>
@@ -134,16 +155,17 @@
 
                     <!-- /menu footer buttons -->
                     <div class="sidebar-footer hidden-small">
-                        <a data-toggle="tooltip" data-placement="top" title="" data-original-title="Settings">
+                        <a data-toggle="tooltip" data-placement="top" title=""
+                            data-original-title="Cambiar de Institucion">
                             <span class="glyphicon glyphicon-cosg" aria-hidden="true"></span>
                         </a>
-                        <a data-toggle="tooltip" data-placement="top" title="" data-original-title="Settings">
+                        <a data-toggle="tooltip" data-placement="top" title="" data-original-title="">
                             <span class="glyphicon glyphicon-cosg" aria-hidden="true"></span>
                         </a>
-                        <a data-toggle="tooltip" data-placement="top" title="" data-original-title="Settings">
+                        <a data-toggle="tooltip" data-placement="top" title="" data-original-title="">
                             <span class="glyphicon glyphicon-cosg" aria-hidden="true"></span>
                         </a>
-                        <a data-toggle="tooltip" data-placement="top" title="" data-original-title="Settings">
+                        <a data-toggle="tooltip" data-placement="top" title="" data-original-title="">
                             <span class="glyphicon glyphicon-cosg" aria-hidden="true"></span>
                         </a>
                     </div>
@@ -181,78 +203,10 @@
                             </li>
 
                             <li role="presentation" class="nav-item dropdown open">
-                                <a href="javascript:;" class="dropdown-toggle info-number" id="navbarDropdown1"
-                                    data-toggle="dropdown" aria-expanded="false">
-                                    <i class="fa fa-envelope-o"></i>
-                                    <span class="badge bg-green">6</span>
+                                <a href="javascript:;" class="" id="navbarDropdown1" data-toggle="dropdown"
+                                    aria-expanded="false">
+                                    <i class="fa fa-institution"></i> {{ session('nombre_institucion') }}
                                 </a>
-                                <ul class="dropdown-menu list-unstyled msg_list" role="menu"
-                                    aria-labelledby="navbarDropdown1">
-                                    <li class="nav-item">
-                                        <a class="dropdown-item">
-                                            <span class="image"><img src="{{ asset('img/img.jpg') }}"
-                                                    alt="Profile Image" /></span>
-                                            <span>
-                                                <span>John Smith</span>
-                                                <span class="time">3 mins ago</span>
-                                            </span>
-                                            <span class="message">
-                                                Film festivals used to be do-or-die moments for movie makers. They were
-                                                where...
-                                            </span>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="dropdown-item">
-                                            <span class="image"><img src="{{ asset('img/img.jpg') }}"
-                                                    alt="Profile Image" /></span>
-                                            <span>
-                                                <span>John Smith</span>
-                                                <span class="time">3 mins ago</span>
-                                            </span>
-                                            <span class="message">
-                                                Film festivals used to be do-or-die moments for movie makers. They were
-                                                where...
-                                            </span>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="dropdown-item">
-                                            <span class="image"><img src="{{ asset('img/img.jpg') }}"
-                                                    alt="Profile Image" /></span>
-                                            <span>
-                                                <span>John Smith</span>
-                                                <span class="time">3 mins ago</span>
-                                            </span>
-                                            <span class="message">
-                                                Film festivals used to be do-or-die moments for movie makers. They were
-                                                where...
-                                            </span>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="dropdown-item">
-                                            <span class="image"><img src="{{ asset('img/img.jpg') }}"
-                                                    alt="Profile Image" /></span>
-                                            <span>
-                                                <span>John Smith</span>
-                                                <span class="time">3 mins ago</span>
-                                            </span>
-                                            <span class="message">
-                                                Film festivals used to be do-or-die moments for movie makers. They were
-                                                where...
-                                            </span>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <div class="text-center">
-                                            <a class="dropdown-item">
-                                                <strong>See All Alerts</strong>
-                                                <i class="fa fa-angle-right"></i>
-                                            </a>
-                                        </div>
-                                    </li>
-                                </ul>
                             </li>
                         </ul>
                     </nav>
@@ -302,7 +256,6 @@
     <!-- bootstrap-daterangepicker -->
     <script src="../vendors/moment/min/moment.min.js"></script>
     <script src="../vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
-
     <!-- Custom Theme Scripts -->
     <script src="{{ asset('vendor/asset/js/plugins/custom.min.js') }}"></script>
     <script>
